@@ -3,7 +3,6 @@ name: Test Source of v2rayA
 on:
   push:
     branches:
-      - main
       - dependabot/*
     paths:
       - "**/*.go"
