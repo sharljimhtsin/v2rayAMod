@@ -474,12 +474,12 @@ func (t *Template) setDNSRouting(routing []coreObj.RoutingRule, supportUDP map[s
 func (t *Template) AppendRoutingRuleByMode(mode configure.RulePortMode, inbounds []string) (err error) {
 	firstOutboundTag, _ := t.FirstProxyOutboundName(nil)
 	// apple pushing. #495 #479
-	t.Routing.Rules = append(t.Routing.Rules, coreObj.RoutingRule{
-		Type:        "field",
-		OutboundTag: "direct",
-		InboundTag:  deepcopy.Copy(inbounds).([]string),
-		Domain:      []string{"domain:push-apple.com.akadns.net", "domain:push.apple.com"},
-	})
+	//t.Routing.Rules = append(t.Routing.Rules, coreObj.RoutingRule{
+	//	Type:        "field",
+	//	OutboundTag: "direct",
+	//	InboundTag:  deepcopy.Copy(inbounds).([]string),
+	//	Domain:      []string{"domain:push-apple.com.akadns.net", "domain:push.apple.com"},
+	//})
 	switch mode {
 	case configure.WhitelistMode:
 		// foreign domains with intranet IP should be proxied first rather than directly connected
@@ -579,7 +579,8 @@ func (t *Template) AppendRoutingRuleByMode(mode configure.RulePortMode, inbounds
 func (t *Template) setRulePortRouting() error {
 	// append rule-http and rule-socks no mather if they are enabled
 	// because "The Same as the Rule Port" may need them
-	return t.AppendRoutingRuleByMode(t.Setting.RulePortMode, []string{"rule-http", "rule-socks"})
+	//return t.AppendRoutingRuleByMode(t.Setting.RulePortMode, []string{"rule-http", "rule-socks"})
+	return t.AppendRoutingRuleByMode(t.Setting.RulePortMode, []string{})
 }
 func parseRoutingA(t *Template, routingInboundTags []string) error {
 	lines := strings.Split(configure.GetRoutingA(), "\n")
@@ -602,7 +603,7 @@ func parseRoutingA(t *Template, routingInboundTags []string) error {
 		log.Warn("parseRoutingA: %v", err)
 		return err
 	}
-	defaultOutbound, _ := t.FirstProxyOutboundName(nil)
+	_, _ = t.FirstProxyOutboundName(nil)
 	for _, rule := range rules {
 		switch rule := rule.(type) {
 		case RoutingA.Define:
@@ -741,7 +742,7 @@ func parseRoutingA(t *Template, routingInboundTags []string) error {
 			case "default":
 				switch v := rule.Value.(type) {
 				case string:
-					defaultOutbound = v
+					_ = v
 					if _, ok := outboundTags[v]; !ok {
 						return fmt.Errorf(`your RoutingA rules depend on the outbound "%v", thus you should select at least one server in this outbound`, v)
 					}
@@ -816,11 +817,11 @@ func parseRoutingA(t *Template, routingInboundTags []string) error {
 			t.Routing.Rules = append(t.Routing.Rules, rr)
 		}
 	}
-	t.Routing.Rules = append(t.Routing.Rules, coreObj.RoutingRule{
-		Type:        "field",
-		OutboundTag: defaultOutbound,
-		InboundTag:  []string{"rule-http", "rule-socks"},
-	})
+	//t.Routing.Rules = append(t.Routing.Rules, coreObj.RoutingRule{
+	//	Type:        "field",
+	//	OutboundTag: defaultOutbound,
+	//	InboundTag:  []string{"rule-http", "rule-socks"},
+	//})
 	return nil
 }
 
@@ -1612,9 +1613,9 @@ func NewTemplate(serverInfos []serverInfo, setting *configure.Setting) (t *Templ
 	t.Routing.DomainMatcher = "mph"
 	//t.setDNSRouting(dnsRouting, supportUDP)
 	//rule port routing
-	//if err = t.setRulePortRouting(); err != nil {
-	//	return nil, err
-	//}
+	if err = t.setRulePortRouting(); err != nil {
+		return nil, err
+	}
 	//transparent routing
 	//if IsTransparentOn(setting) {
 	//	if err = t.setTransparentRouting(); err != nil {
@@ -1641,7 +1642,7 @@ func NewTemplate(serverInfos []serverInfo, setting *configure.Setting) (t *Templ
 			port: port,
 		})
 	}
-	t.setWhitelistRouting(whitelist)
+	//t.setWhitelistRouting(whitelist)
 
 	t.updatePrivateRouting()
 
