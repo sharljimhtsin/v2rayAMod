@@ -339,25 +339,25 @@ func (t *Template) setDNS(outbounds []serverInfo, supportUDP map[string]bool) (r
 	}
 
 	if t.DNS.Servers == nil {
-		t.DNS.Servers = []interface{}{"localhost"}
+		//t.DNS.Servers = []interface{}{"localhost"}
 	}
 	var domainsToLookup []string
 	for _, v := range outbounds {
 		if net.ParseIP(v.Info.GetHostname()) == nil {
-			domainsToLookup = append(domainsToLookup, v.Info.GetHostname())
+			//domainsToLookup = append(domainsToLookup, v.Info.GetHostname())
 		}
 	}
 	for _, r := range routing {
 		if len(r.Domain) > 0 {
-			domainsToLookup = append(domainsToLookup, r.Domain...)
+			//domainsToLookup = append(domainsToLookup, r.Domain...)
 		}
 	}
 	domainsToLookup = common.Deduplicate(domainsToLookup)
 	if len(domainsToLookup) > 0 {
 		var dnsList []string
 		dnsList = []string{
-			"tcp://208.67.220.220:5353 -> direct",
-			"tcp://119.29.29.29:53 -> direct",
+			//"tcp://208.67.220.220:5353 -> direct",
+			//"tcp://119.29.29.29:53 -> direct",
 		}
 		d, r := parseAdvancedDnsServers(dnsList, domainsToLookup)
 		t.DNS.Servers = append(t.DNS.Servers, d...)
@@ -365,7 +365,7 @@ func (t *Template) setDNS(outbounds []serverInfo, supportUDP map[string]bool) (r
 	}
 	// hard code for SNI problem like apple pushing
 	t.DNS.Hosts = make(coreObj.Hosts)
-	t.DNS.Hosts["courier.push.apple.com"] = []string{"1-courier.push.apple.com"}
+	//t.DNS.Hosts["courier.push.apple.com"] = []string{"1-courier.push.apple.com"}
 
 	// deduplicate
 	strRouting := make([]string, 0, len(routing))
@@ -1591,7 +1591,7 @@ func NewTemplate(serverInfos []serverInfo, setting *configure.Setting) (t *Templ
 		t.Log = nil
 	}
 	// resolve Outbounds
-	supportUDP, outboundTags, err := t.resolveOutbounds(serverData)
+	_, outboundTags, err := t.resolveOutbounds(serverData)
 	if err != nil {
 		return nil, err
 	}
@@ -1602,25 +1602,25 @@ func NewTemplate(serverInfos []serverInfo, setting *configure.Setting) (t *Templ
 		return nil, err
 	}
 	//set DNS
-	dnsRouting, err := t.setDNS(serverInfos, supportUDP)
-	if err != nil {
-		return nil, err
-	}
+	//dnsRouting, err := t.setDNS(serverInfos, supportUDP)
+	//if err != nil {
+	//	return nil, err
+	//}
 	//append a DNS outbound
-	t.appendDNSOutbound()
+	//t.appendDNSOutbound()
 	//DNS routing
 	t.Routing.DomainMatcher = "mph"
-	t.setDNSRouting(dnsRouting, supportUDP)
+	//t.setDNSRouting(dnsRouting, supportUDP)
 	//rule port routing
-	if err = t.setRulePortRouting(); err != nil {
-		return nil, err
-	}
+	//if err = t.setRulePortRouting(); err != nil {
+	//	return nil, err
+	//}
 	//transparent routing
-	if IsTransparentOn(setting) {
-		if err = t.setTransparentRouting(); err != nil {
-			return nil, err
-		}
-	}
+	//if IsTransparentOn(setting) {
+	//	if err = t.setTransparentRouting(); err != nil {
+	//		return nil, err
+	//	}
+	//}
 	//set vmess inbound routing
 	t.setVmessInboundRouting()
 	// set api
@@ -1646,7 +1646,7 @@ func NewTemplate(serverInfos []serverInfo, setting *configure.Setting) (t *Templ
 	t.updatePrivateRouting()
 
 	// add spare tire outbound routing. Fix: https://github.com/v2rayA/v2rayA/issues/447
-	t.Routing.Rules = append(t.Routing.Rules, coreObj.RoutingRule{Type: "field", Port: "0-65535", OutboundTag: "proxy"})
+	//t.Routing.Rules = append(t.Routing.Rules, coreObj.RoutingRule{Type: "field", Port: "0-65535", OutboundTag: "proxy"})
 
 	// Set group routing. This should be put in the end of routing setters.
 	t.setGroupRouting()
