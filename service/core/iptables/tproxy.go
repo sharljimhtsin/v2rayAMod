@@ -2,16 +2,17 @@ package iptables
 
 import (
 	"fmt"
-	"github.com/v2rayA/v2rayA/common/cmds"
-	"github.com/v2rayA/v2rayA/core/v2ray/asset"
-	"github.com/v2rayA/v2rayA/db/configure"
 	"os"
 	"strconv"
 	"strings"
+
+	"github.com/v2rayA/v2rayA/common/cmds"
+	"github.com/v2rayA/v2rayA/core/v2ray/asset"
+	"github.com/v2rayA/v2rayA/db/configure"
 )
 
 var (
-	TproxyNotSkipBr string
+	TproxyNotSkipBr string = "true"
 )
 
 type tproxy interface {

@@ -1610,7 +1610,7 @@ func NewTemplate(serverInfos []serverInfo, setting *configure.Setting) (t *Templ
 	//append a DNS outbound
 	//t.appendDNSOutbound()
 	//DNS routing
-	t.Routing.DomainMatcher = "mph"
+	//t.Routing.DomainMatcher = "mph"
 	//t.setDNSRouting(dnsRouting, supportUDP)
 	//rule port routing
 	if err = t.setRulePortRouting(); err != nil {
@@ -1644,7 +1644,7 @@ func NewTemplate(serverInfos []serverInfo, setting *configure.Setting) (t *Templ
 	}
 	//t.setWhitelistRouting(whitelist)
 
-	t.updatePrivateRouting()
+	//t.updatePrivateRouting()
 
 	// add spare tire outbound routing. Fix: https://github.com/v2rayA/v2rayA/issues/447
 	//t.Routing.Rules = append(t.Routing.Rules, coreObj.RoutingRule{Type: "field", Port: "0-65535", OutboundTag: "proxy"})
